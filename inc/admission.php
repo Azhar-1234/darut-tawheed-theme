@@ -241,21 +241,11 @@ add_action('add_meta_boxes_dt_admission', function () {
     }, 'dt_admission', 'normal', 'high');
 });
 
-// Unread count bubble on the admin menu.
+// Unread count bubble on its item in the Darut Tawheed menu.
 add_action('admin_menu', function () {
-    global $menu;
     $unread = new WP_Query(['post_type' => 'dt_admission', 'post_status' => 'publish', 'meta_query' => [['key' => 'dt_read', 'value' => 0]], 'fields' => 'ids', 'posts_per_page' => 99, 'no_found_rows' => true]);
-    $n = count($unread->posts);
-    if (!$n) {
-        return;
-    }
-    foreach ($menu as $i => $item) {
-        if ($item[2] === 'edit.php?post_type=dt_admission') {
-            $menu[$i][0] .= ' <span class="awaiting-mod">' . (int) $n . '</span>';
-            break;
-        }
-    }
-}, 99);
+    dt_menu_badge('edit.php?post_type=dt_admission', count($unread->posts));
+}, 1000);
 
 /* ---------- Printable form (paper layout with signature lines and the office section) ---------- */
 

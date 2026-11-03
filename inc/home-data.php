@@ -56,7 +56,8 @@ function dt_home_payload() {
         'sections' => dt_home_sections(),
         'slides'   => $slides,
         'notices'  => ['title' => dt_opt('notices_title'), 'items' => $notices, 'allText' => dt_opt('notice_all_text'), 'allUrl' => get_post_type_archive_link('notice')],
-        'about'    => ['bg' => dt_img(dt_opt('about_image'), 'large'), 'badge' => dt_opt('established_year'), 'title' => dt_opt('about_title'), 'html' => wp_kses_post(wpautop(dt_opt('about_text')))],
+        'about'    => ['bg' => dt_img(dt_opt('about_image'), 'large') ?: get_template_directory_uri() . '/assets/img/about-building.webp', 'badge' => dt_opt('established_year'), 'title' => dt_opt('about_title'), 'html' => wp_kses_post(wpautop(dt_opt('about_text')))],
+        'chairmanVideo' => dt_chairman_video_data(),
         'features' => ['title' => dt_opt('features_title'), 'moreText' => dt_opt('features_more'), 'items' => $features],
         'facilities' => ['title' => dt_opt('facilities_title'), 'items' => $facilities, 'moreText' => dt_opt('facilities_more_text'), 'moreUrl' => dt_opt('facilities_more_link') ?: home_url('/facility/')],
         'chairman' => ['title' => dt_opt('chairman_title'), 'photo' => dt_img(dt_opt('chairman_photo'), 'medium'), 'quote' => dt_opt('chairman_quote'), 'name' => dt_opt('chairman_name'), 'designation' => dt_opt('chairman_designation')],
@@ -67,5 +68,30 @@ function dt_home_payload() {
             'sent' => $sent, 'action' => admin_url('admin-post.php'), 'nonce' => wp_create_nonce('dt_feedback'),
         ],
         'branches' => ['title' => dt_opt('branches_title'), 'items' => $branches],
+    ];
+}
+
+/** Chairman video section: a YouTube link, or an uploaded file when no link is given. Null when neither is set. */
+function dt_chairman_video_data() {
+    $url = trim((string) dt_opt('cvideo_url'));
+    $file = (int) dt_opt('cvideo_file');
+    $poster = dt_img(dt_opt('cvideo_poster'), 'large');
+    $video = null;
+    if ($url !== '' && preg_match('~(?:youtube\.com/(?:watch\?(?:[^#]*&)?v=|embed/|shorts/|live/)|youtu\.be/)([A-Za-z0-9_-]{11})~', $url, $m)) {
+        $video = ['kind' => 'youtube', 'id' => $m[1], 'src' => '', 'poster' => $poster ?: 'https://i.ytimg.com/vi/' . $m[1] . '/hqdefault.jpg'];
+    } elseif ($url !== '' && ($embed = dt_video_embed($url))) {
+        $video = ['kind' => $embed[0] === 'iframe' ? 'iframe' : 'file', 'id' => '', 'src' => $embed[1], 'poster' => $poster];
+    } elseif ($file && ($src = wp_get_attachment_url($file))) {
+        $video = ['kind' => 'file', 'id' => '', 'src' => $src, 'poster' => $poster];
+    }
+    if (!$video) {
+        return null;
+    }
+    return $video + [
+        'title'       => dt_opt('cvideo_title'),
+        'subtitle'    => dt_opt('cvideo_subtitle'),
+        'autoplay'    => (bool) dt_opt('cvideo_autoplay'),
+        'name'        => dt_opt('chairman_name'),
+        'designation' => dt_opt('chairman_designation'),
     ];
 }

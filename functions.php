@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('DT_VERSION', '1.0.0');
+define('DT_VERSION', '1.0.5');
 
 require get_template_directory() . '/inc/helpers.php';
 require get_template_directory() . '/inc/post-types.php';
@@ -35,9 +35,11 @@ add_action('after_setup_theme', function () {
 });
 
 add_action('wp_enqueue_scripts', function () {
-    wp_enqueue_style('dt-fonts', 'https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;500;600;700&display=swap', [], null);
+    $font = dt_opt('design_font') ?: 'Noto Serif Bengali';
+    wp_enqueue_style('dt-fonts', 'https://fonts.googleapis.com/css2?family=' . str_replace(' ', '+', $font) . ':wght@400;500;600;700&display=swap', [], null);
     wp_enqueue_style('dt-fa', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', [], '6.4.0');
     wp_enqueue_style('dt-style', get_stylesheet_uri(), ['dt-fonts'], DT_VERSION);
+    wp_add_inline_style('dt-style', dt_design_css());
     if (is_front_page()) {
         $dist = get_template_directory() . '/assets/dist/';
         $uri  = get_template_directory_uri() . '/assets/dist/';

@@ -4,6 +4,7 @@ import About from './sections/About.jsx';
 import Features from './sections/Features.jsx';
 import Facilities from './sections/Facilities.jsx';
 import Chairman from './sections/Chairman.jsx';
+import ChairmanVideo from './sections/ChairmanVideo.jsx';
 import Contact from './sections/Contact.jsx';
 import Branches from './sections/Branches.jsx';
 
@@ -12,6 +13,7 @@ const registry = {
   slider: (d) => <Slider slides={d.slides} />,
   notice_ticker: (d) => <Notices {...d.notices} />,
   about: (d) => <About {...d.about} />,
+  chairman_video: (d) => (d.chairmanVideo ? <ChairmanVideo {...d.chairmanVideo} /> : null),
   features: (d) => <Features {...d.features} />,
   facilities: (d) => <Facilities {...d.facilities} />,
   chairman: (d) => <Chairman {...d.chairman} />,

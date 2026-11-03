@@ -101,6 +101,7 @@ function dt_home_section_labels() {
         'slider'        => 'Slider',
         'notice_ticker' => 'গুরুত্বপূর্ণ আপডেট (Notices)',
         'about'         => 'কেন দারুত তাওহীদ আল-মাদানিয়্যাহ মাদ্রাসা (About)',
+        'chairman_video' => 'চেয়ারম্যানের ভিডিও বার্তা (Video)',
         'features'      => 'যে কারণে অনন্য (Features)',
         'facilities'    => 'সুযোগ-সুবিধা (Facilities)',
         'chairman'      => 'চেয়ারম্যানের বাণী',
@@ -261,4 +262,50 @@ function dt_video_embed($url) {
         return ['file', $url];
     }
     return null;
+}
+
+/** CSS overrides from Darut Tawheed > Design. Only values that differ from the stylesheet defaults are printed. */
+function dt_design_css() {
+    $hex = function ($k, $fallback) { return sanitize_hex_color(dt_opt($k)) ?: $fallback; };
+    $num = function ($k, $fallback, $min, $max) { $v = (int) dt_opt($k); return $v ? max($min, min($max, $v)) : $fallback; };
+    $green  = $hex('design_primary', '#206850');
+    $dark   = $hex('design_primary_dark', '#174f3c');
+    $accent = $hex('design_accent', '#a06018');
+    $vars = [
+        '--green'          => $green,
+        '--green-dark'     => $dark,
+        '--green-tint'     => 'color-mix(in srgb, ' . $green . ' 12%, #fff)',
+        '--accent'         => $accent,
+        '--accent-dark'    => 'color-mix(in srgb, ' . $accent . ' 78%, #000)',
+        '--accent-tint'    => 'color-mix(in srgb, ' . $accent . ' 18%, #fff)',
+        '--accent-on-dark' => 'color-mix(in srgb, ' . $accent . ' 45%, #fff)',
+        '--ink'            => $hex('design_text', '#292d2a'),
+        '--bg'             => $hex('design_soft_bg', '#f6f9f7'),
+        '--footer-bg'      => $hex('design_footer_bg', '#123a2d'),
+        '--radius'         => $num('design_radius', 16, 0, 40) . 'px',
+    ];
+    $defaults = ['--green' => '#206850', '--green-dark' => '#174f3c', '--accent' => '#a06018'];
+    // Keep the hand-tuned tints while the main colours are unchanged.
+    if ($green === $defaults['--green']) {
+        unset($vars['--green-tint']);
+    }
+    if ($accent === $defaults['--accent']) {
+        unset($vars['--accent-dark'], $vars['--accent-tint'], $vars['--accent-on-dark']);
+    }
+    $css = ':root{';
+    foreach ($vars as $k => $v) {
+        $css .= $k . ':' . $v . ';';
+    }
+    $css .= '}';
+    $font  = dt_opt('design_font') ?: 'Noto Serif Bengali';
+    $size  = $num('design_font_size', 16, 12, 22);
+    $width = $num('design_container', 1080, 760, 1600);
+    $css .= "body{font-family:'" . esc_attr($font) . "',serif;font-size:" . $size . 'px;}';
+    if ($width !== 1080) {
+        $css .= '.container{width:min(' . $width . 'px,100% - 40px);}'
+            . '.topbar__inner.container,.site-header__inner.container{width:min(' . ($width + 40) . 'px,100% - 32px);}'
+            . '.site-footer .container{width:min(' . ($width + 160) . 'px,100% - 40px);}'
+            . '.br-container{max-width:' . $width . 'px;}';
+    }
+    return $css;
 }
