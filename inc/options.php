@@ -45,7 +45,7 @@ function dt_option_tabs() {
         'Home: chairman video' => [
             'cvideo_title'    => ['Heading', 'text', 'চেয়ারম্যানের ভিডিও বার্তা'],
             'cvideo_subtitle' => ['Short text under the heading (optional)', 'text', 'দারুত তাওহীদ আল-মাদানিয়্যাহ মাদ্রাসা সম্পর্কে প্রতিষ্ঠাতা-চেয়ারম্যানের বক্তব্য'],
-            'cvideo_url'      => ['YouTube link (recommended: loads fast and saves hosting space)', 'url', ''],
+            'cvideo_url'      => ['YouTube link (recommended: loads fast and saves hosting space)', 'url', 'https://youtu.be/YZcs_Qzuaqo'],
             'cvideo_file'     => ['Or upload a video file (MP4; used only when the YouTube link is empty)', 'video', ''],
             'cvideo_poster'   => ['Cover image shown before play (optional; the YouTube thumbnail is used when empty)', 'image', ''],
             'cvideo_autoplay' => ['Play automatically, muted and on repeat (not recommended: uses visitors\' mobile data, and browsers block sound)', 'checkbox', 0],
